@@ -6,13 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Vegetation & Terrain Change Detection</title>
+    <title>Vegetation & Terrain Change Detection System</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
 
     <script defer
-            src="{{ url_for('static', filename='js/app.js') }}"></script>
+            src="{{ url_for('static', filename='js/app.js') }}">
+    </script>
 
 </head>
 
@@ -20,159 +21,237 @@
 
 <div class="container">
 
-    <!-- ================= HEADER ================= -->
+    <!-- ===================================== -->
+    <!-- HEADER -->
+    <!-- ===================================== -->
 
-    <header>
+    <header class="header">
 
-        <h1>Vegetation & Terrain Change Detection System</h1>
+        <div>
 
-        <p>
-            AI-assisted Multi-layer Satellite Change Analysis
-        </p>
+            <h1>
+                Vegetation & Terrain Change Detection System
+            </h1>
+
+            <p>
+                AI-assisted Multi-layer Satellite Change Analysis
+            </p>
+
+        </div>
 
     </header>
 
+    <!-- ===================================== -->
+    <!-- TOOLBAR -->
+    <!-- ===================================== -->
 
+    <form action="/analyze"
+          method="POST"
+          enctype="multipart/form-data"
+          class="toolbar">
 
-    <!-- ================= TOOLBAR ================= -->
+        <div class="toolbar-left">
 
-    <form
-            action="/analyze"
-            method="POST"
-            enctype="multipart/form-data"
-            class="toolbar">
+            <div class="upload-item">
 
-        <div class="toolbar-group">
+                <label for="image1">
 
-            <label>
+                    📁 Before Image
 
-                Before Image
+                </label>
 
                 <input
+                        id="image1"
                         type="file"
                         name="image1"
                         required>
 
-            </label>
+            </div>
 
-            <label>
+            <div class="upload-item">
 
-                After Image
+                <label for="image2">
+
+                    📁 After Image
+
+                </label>
 
                 <input
+                        id="image2"
                         type="file"
                         name="image2"
                         required>
 
-            </label>
+            </div>
 
         </div>
 
-        <button type="submit">
+        <button class="analyze-btn">
 
-            Analyze Images
+            🛰 Analyze Images
 
         </button>
 
     </form>
 
-
-
-    <!-- ================= MAIN GRID ================= -->
+    <!-- ===================================== -->
+    <!-- DASHBOARD -->
+    <!-- ===================================== -->
 
     <div class="dashboard">
 
-
-
+        <!-- ================================= -->
         <!-- LEFT PANEL -->
+        <!-- ================================= -->
 
         <aside class="left-panel">
 
-            <h2>Analysis Layers</h2>
+            <div class="panel-card">
 
-            <label>
+                <h2>
 
-                <input
-                        type="checkbox"
-                        checked
-                        id="toggle-before">
+                    Analysis Layers
 
-                Before Image
+                </h2>
 
-            </label>
+                <label>
 
-            <label>
+                    <input
+                            type="checkbox"
+                            id="toggle-before"
+                            checked>
 
-                <input
-                        type="checkbox"
-                        checked
-                        id="toggle-after">
+                    🌄 Before Image
 
-                After Image
+                </label>
 
-            </label>
+                <label>
 
-            <label>
+                    <input
+                            type="checkbox"
+                            id="toggle-after"
+                            checked>
 
-                <input
-                        type="checkbox"
-                        checked
-                        id="toggle-change">
+                    🌅 After Image
 
-                Vegetation
+                </label>
 
-            </label>
+                <label>
 
-            <label>
+                    <input
+                            type="checkbox"
+                            id="toggle-change"
+                            checked>
 
-                <input
-                        type="checkbox">
+                    🌿 Vegetation
 
-                Water Bodies
+                </label>
 
-            </label>
+                <label>
 
-            <hr>
+                    <input
+                            type="checkbox">
 
-            <label>
+                    💧 Water Bodies
 
-                <input
-                        type="checkbox"
-                        disabled>
+                </label>
 
-                Terrain (Coming Soon)
+                <hr>
 
-            </label>
+                <label class="coming-soon">
 
-            <label>
+                    <input
+                            type="checkbox"
+                            disabled>
 
-                <input
-                        type="checkbox"
-                        disabled>
+                    🏔 Terrain
 
-                Urban (Coming Soon)
+                    <span>
 
-            </label>
+                        Coming Soon
 
-            <label>
+                    </span>
 
-                <input
-                        type="checkbox"
-                        disabled>
+                </label>
 
-                Agriculture (Coming Soon)
+                <label class="coming-soon">
 
-            </label>
+                    <input
+                            type="checkbox"
+                            disabled>
+
+                    🏙 Urban
+
+                    <span>
+
+                        Coming Soon
+
+                    </span>
+
+                </label>
+
+                <label class="coming-soon">
+
+                    <input
+                            type="checkbox"
+                            disabled>
+
+                    🌾 Agriculture
+
+                    <span>
+
+                        Coming Soon
+
+                    </span>
+
+                </label>
+
+            </div>
+
+            <div class="panel-card">
+
+                <h2>
+
+                    Legend
+
+                </h2>
+
+                <div class="legend-item">
+
+                    🟢 Vegetation Gain
+
+                </div>
+
+                <div class="legend-item">
+
+                    🔴 Vegetation Loss
+
+                </div>
+
+                <div class="legend-item">
+
+                    🔵 Water Gain
+
+                </div>
+
+                <div class="legend-item">
+
+                    🟣 Water Loss
+
+                </div>
+
+            </div>
 
         </aside>
 
-
-
+        <!-- ================================= -->
         <!-- CENTER PANEL -->
+        <!-- ================================= -->
 
         <main class="viewer">
-
-
+                        <!-- ============================= -->
+            <!-- BEFORE / AFTER COMPARISON -->
+            <!-- ============================= -->
 
             <section class="comparison-card">
 
@@ -187,26 +266,40 @@
                     {% if image1 %}
 
                     <div
-                            class="image-box"
-                            id="before-section">
+                        class="image-card"
+                        id="before-section">
 
-                        <h3>Before</h3>
+                        <h3>
 
-                        <img src="/{{ image1 }}">
+                            Before
+
+                        </h3>
+
+                        <img
+                            src="/{{ image1 }}"
+                            alt="Before Image">
 
                     </div>
 
                     {% endif %}
 
+
+
                     {% if image2 %}
 
                     <div
-                            class="image-box"
-                            id="after-section">
+                        class="image-card"
+                        id="after-section">
 
-                        <h3>After</h3>
+                        <h3>
 
-                        <img src="/{{ image2 }}">
+                            After
+
+                        </h3>
+
+                        <img
+                            src="/{{ image2 }}"
+                            alt="After Image">
 
                     </div>
 
@@ -218,11 +311,15 @@
 
 
 
+            <!-- ============================= -->
+            <!-- CHANGE DETECTION -->
+            <!-- ============================= -->
+
             {% if overlay %}
 
             <section
-                    class="change-card"
-                    id="overlay-section">
+                class="change-card"
+                id="overlay-section">
 
                 <h2>
 
@@ -230,7 +327,9 @@
 
                 </h2>
 
-                <img src="/{{ overlay }}">
+                <img
+                    src="/{{ overlay }}"
+                    alt="Change Detection">
 
             </section>
 
@@ -238,23 +337,43 @@
 
 
 
-            <section class="legend-card">
+            <!-- ============================= -->
+            <!-- FUTURE SWIPE PLACEHOLDER -->
+            <!-- ============================= -->
+
+            <section class="future-card">
 
                 <h2>
 
-                    Legend
+                    Upcoming Features
 
                 </h2>
 
-                <div class="legend">
+                <div class="future-grid">
 
-                    <p>🟢 Vegetation Gain</p>
+                    <div class="future-item">
 
-                    <p>🔴 Vegetation Loss</p>
+                        🛰 Swipe Comparison Viewer
 
-                    <p>🔵 Water Gain</p>
+                    </div>
 
-                    <p>🟣 Water Loss</p>
+                    <div class="future-item">
+
+                        🌿 Dynamic Layer Rendering
+
+                    </div>
+
+                    <div class="future-item">
+
+                        🏔 Terrain Analysis
+
+                    </div>
+
+                    <div class="future-item">
+
+                        🤖 SegFormer AI
+
+                    </div>
 
                 </div>
 
@@ -264,121 +383,252 @@
 
 
 
+        <!-- ============================= -->
         <!-- RIGHT PANEL -->
+        <!-- ============================= -->
 
         <aside
-                class="right-panel"
-                id="metadata-section">
+            class="right-panel"
+            id="metadata-section">
 
-            <h2>
+            <div class="panel-card">
 
-                Metadata
+                <h2>
 
-            </h2>
+                    Analysis Results
 
-            {% if metadata %}
+                </h2>
 
-            {% if metadata.vegetation %}
 
-            <div class="info-card">
 
-                <h3>🌿 Vegetation</h3>
+                {% if metadata %}
 
-                <p>
 
-                    Before :
 
-                    {{ metadata.vegetation.before }}%
+                {% if metadata.vegetation %}
 
-                </p>
+                <div class="analysis-block">
 
-                <p>
+                    <h3>
 
-                    After :
+                        🌿 Vegetation
 
-                    {{ metadata.vegetation.after }}%
+                    </h3>
 
-                </p>
+                    <div class="metric">
 
-                <p>
+                        <span>Before</span>
 
-                    Change :
+                        <span>
 
-                    {{ metadata.vegetation.change }}%
+                            {{ metadata.vegetation.before }}%
 
-                </p>
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill vegetation-before"
+                            style="width: {{ metadata.vegetation.before | default(0) }}%;">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="metric">
+
+                        <span>After</span>
+
+                        <span>
+
+                            {{ metadata.vegetation.after }}%
+
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill vegetation-after"
+                            style="width: {{ metadata.vegetation.after | default(0) }}%;">
+
+                        </div>
+
+                    </div>
+
+                    <p class="change-text">
+
+                        ▲ {{ metadata.vegetation.change }}%
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+                                {% if metadata.water %}
+
+                <div class="analysis-block">
+
+                    <h3>
+
+                        💧 Water Bodies
+
+                    </h3>
+
+                    <div class="metric">
+
+                        <span>Before</span>
+
+                        <span>
+
+                            {{ metadata.water.before }}%
+
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill water-before"
+                            style="width: {{ metadata.water.before | default(0) }}%;">
+
+                        </div>
+
+                    </div>
+
+                    <div class="metric">
+
+                        <span>After</span>
+
+                        <span>
+
+                            {{ metadata.water.after }}%
+
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-fill water-after"
+                            style="width: {{ metadata.water.after | default(0) }}%;">
+
+                        </div>
+
+                    </div>
+
+                    <p class="change-text">
+
+                        {{ metadata.water.change }}%
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+
+                {% if summary %}
+
+                <div class="analysis-block">
+
+                    <h3>
+
+                        📋 Summary
+
+                    </h3>
+
+                    <ul class="summary-list">
+
+                        {% for item in summary %}
+
+                        <li>
+
+                            {{ item }}
+
+                        </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>
+
+                {% endif %}
+
+
+
+                {% endif %}
+
+
+
+                <div class="analysis-block">
+
+                    <h3>
+
+                        ⚙ System Status
+
+                    </h3>
+
+                    <div class="status-row">
+
+                        <span>GPU</span>
+
+                        <span class="status-active">
+
+                            CUDA ✓
+
+                        </span>
+
+                    </div>
+
+                    <div class="status-row">
+
+                        <span>Vegetation Model</span>
+
+                        <span class="status-active">
+
+                            Active
+
+                        </span>
+
+                    </div>
+
+                    <div class="status-row">
+
+                        <span>Water Model</span>
+
+                        <span class="status-active">
+
+                            Active
+
+                        </span>
+
+                    </div>
+
+                    <div class="status-row">
+
+                        <span>Terrain</span>
+
+                        <span class="status-pending">
+
+                            Coming Soon
+
+                        </span>
+
+                    </div>
+
+                </div>
 
             </div>
-
-            {% endif %}
-
-
-
-            {% if metadata.water %}
-
-            <div class="info-card">
-
-                <h3>💧 Water Bodies</h3>
-
-                <p>
-
-                    Before :
-
-                    {{ metadata.water.before }}%
-
-                </p>
-
-                <p>
-
-                    After :
-
-                    {{ metadata.water.after }}%
-
-                </p>
-
-                <p>
-
-                    Change :
-
-                    {{ metadata.water.change }}%
-
-                </p>
-
-            </div>
-
-            {% endif %}
-
-
-
-            {% if summary %}
-
-            <div class="info-card">
-
-                <h3>
-
-                    Summary
-
-                </h3>
-
-                <ul>
-
-                    {% for item in summary %}
-
-                    <li>
-
-                        {{ item }}
-
-                    </li>
-
-                    {% endfor %}
-
-                </ul>
-
-            </div>
-
-            {% endif %}
-
-            {% endif %}
 
         </aside>
 
