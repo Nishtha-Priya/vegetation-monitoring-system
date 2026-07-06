@@ -1,0 +1,429 @@
+/* ========================= */
+/* RESET */
+/* ========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:"Segoe UI",sans-serif;
+
+    background:#edf1f5;
+
+    color:#333;
+
+}
+
+/* ========================= */
+/* CONTAINER */
+/* ========================= */
+
+.container{
+
+    width:96%;
+
+    margin:25px auto;
+
+}
+
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
+header{
+
+    background:white;
+
+    border-left:8px solid #d97706;
+
+    border-radius:12px;
+
+    padding:20px 30px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+}
+
+header h1{
+
+    color:#d97706;
+
+    margin-bottom:6px;
+
+    font-size:34px;
+
+}
+
+header p{
+
+    color:#666;
+
+}
+
+/* ========================= */
+/* TOOLBAR */
+/* ========================= */
+
+.toolbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
+}
+
+.toolbar-group{
+
+    display:flex;
+
+    gap:25px;
+
+}
+
+.toolbar label{
+
+    display:flex;
+
+    flex-direction:column;
+
+    font-weight:600;
+
+    color:#555;
+
+    gap:8px;
+
+}
+
+.toolbar input{
+
+    padding:8px;
+
+}
+
+button{
+
+    background:#d97706;
+
+    color:white;
+
+    border:none;
+
+    padding:13px 28px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#b45309;
+
+}
+
+/* ========================= */
+/* DASHBOARD */
+/* ========================= */
+
+.dashboard{
+
+    display:grid;
+
+    grid-template-columns:260px 1fr 320px;
+
+    gap:20px;
+
+}
+
+/* ========================= */
+/* LEFT PANEL */
+/* ========================= */
+
+.left-panel{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+    height:fit-content;
+
+}
+
+.left-panel h2{
+
+    color:#d97706;
+
+    margin-bottom:18px;
+
+}
+
+.left-panel label{
+
+    display:block;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.left-panel label:hover{
+
+    background:#fff3e7;
+
+}
+
+.left-panel hr{
+
+    margin:15px 0;
+
+}
+
+/* ========================= */
+/* VIEWER */
+/* ========================= */
+
+.viewer{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+/* ========================= */
+
+.comparison-card,
+
+.change-card,
+
+.legend-card{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+}
+
+/* ========================= */
+
+.comparison-card h2,
+
+.change-card h2,
+
+.legend-card h2{
+
+    color:#d97706;
+
+    margin-bottom:18px;
+
+}
+
+/* ========================= */
+
+.comparison-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+.image-box{
+
+    background:#fafafa;
+
+    border-radius:10px;
+
+    padding:12px;
+
+}
+
+.image-box h3{
+
+    margin-bottom:12px;
+
+    color:#666;
+
+}
+
+.image-box img{
+
+    width:100%;
+
+    border-radius:8px;
+
+}
+
+/* ========================= */
+
+.change-card img{
+
+    width:100%;
+
+    border-radius:10px;
+
+}
+
+/* ========================= */
+
+.legend{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+}
+
+.legend p{
+
+    background:#fff8ef;
+
+    padding:10px;
+
+    border-radius:8px;
+
+}
+
+/* ========================= */
+/* RIGHT PANEL */
+/* ========================= */
+
+.right-panel{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+}
+
+.right-panel h2{
+
+    color:#d97706;
+
+    margin-bottom:18px;
+
+}
+
+/* ========================= */
+
+.info-card{
+
+    background:#fafafa;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    margin-bottom:18px;
+
+}
+
+.info-card h3{
+
+    margin-bottom:12px;
+
+    color:#d97706;
+
+}
+
+.info-card p{
+
+    margin:8px 0;
+
+}
+
+.info-card ul{
+
+    padding-left:20px;
+
+}
+
+.info-card li{
+
+    margin:8px 0;
+
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media(max-width:1200px){
+
+    .dashboard{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .toolbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .toolbar-group{
+
+        flex-direction:column;
+
+        width:100%;
+
+    }
+
+    .comparison-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}

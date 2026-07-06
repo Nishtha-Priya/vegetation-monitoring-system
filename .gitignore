@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+.venv/
+
+# VS Code
+.vscode/
+
+# Uploads
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Outputs
+static/outputs/*
+!static/outputs/.gitkeep
+
+# OS Files
+Thumbs.db
+.DS_Store
