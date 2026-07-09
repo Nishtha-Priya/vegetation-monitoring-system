@@ -2,70 +2,54 @@ import cv2
 import numpy as np
 
 
-def detect_changes(mask1, mask2):
+def detect_changes(mask_before, mask_after):
+    """
+    Returns:
+        gained : New pixels appearing in after image
+        lost   : Pixels disappearing from before image
+    """
 
-    # Force both masks to the same size
-    h = min(mask1.shape[0], mask2.shape[0])
-    w = min(mask1.shape[1], mask2.shape[1])
-
-    mask1 = cv2.resize(
-        mask1,
-        (w, h),
-        interpolation=cv2.INTER_NEAREST
-    )
-
-    mask2 = cv2.resize(
-        mask2,
-        (w, h),
-        interpolation=cv2.INTER_NEAREST
-    )
-
-    before = mask1 > 0
-    after = mask2 > 0
-
-    gained = (~before) & after
-    lost = before & (~after)
+    gained = np.logical_and(mask_after == 255, mask_before == 0)
+    lost = np.logical_and(mask_before == 255, mask_after == 0)
 
     return gained, lost
 
 
-def add_layer_overlay(
-        image,
-        gained,
-        lost,
-        gain_color,
-        loss_color,
-        alpha=0.55
-):
+def add_layer_overlay(image, gained, lost,
+                      gain_color, loss_color,
+                      alpha=0.35):
+    """
+    Draw one layer overlay with custom colors.
+    """
 
     overlay = image.copy()
 
-    h, w = image.shape[:2]
+    overlay[gained] = gain_color
+    overlay[lost] = loss_color
 
-    gained = cv2.resize(
-        gained.astype(np.uint8),
-        (w, h),
-        interpolation=cv2.INTER_NEAREST
-    ).astype(bool)
-
-    lost = cv2.resize(
-        lost.astype(np.uint8),
-        (w, h),
-        interpolation=cv2.INTER_NEAREST
-    ).astype(bool)
-
-    color_layer = np.zeros_like(image)
-
-    color_layer[gained] = gain_color
-    color_layer[lost] = loss_color
-
-    # Blend instead of replacing pixels
-    result = cv2.addWeighted(
-        image,
-        1.0,
-        color_layer,
+    return cv2.addWeighted(
+        overlay,
         alpha,
+        image,
+        1 - alpha,
         0
     )
 
-    return result
+
+def combine_overlays(image, overlays):
+    """
+    Combine multiple overlays together.
+    """
+
+    combined = image.copy()
+
+    for overlay in overlays:
+        combined = cv2.addWeighted(
+            combined,
+            1.0,
+            overlay,
+            1.0,
+            0
+        )
+
+    return combined

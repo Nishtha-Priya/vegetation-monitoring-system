@@ -3,19 +3,20 @@ from werkzeug.utils import secure_filename
 
 import os
 import cv2
-import numpy as np
 import json
+import numpy as np
 
 from models.vegetation import vegetation_mask
 from models.water import water_mask
 from models.change_detector import (
     detect_changes,
-    add_layer_overlay
+    add_layer_overlay,
+    combine_overlays
 )
 
-
 app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 UPLOAD_FOLDER = "static/uploads"
@@ -27,7 +28,6 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 @app.route("/")
 def home():
-
     return render_template("index.html")
 
 
@@ -40,32 +40,24 @@ def analyze():
     filename1 = secure_filename(image1.filename)
     filename2 = secure_filename(image2.filename)
 
-    path1 = os.path.join(
-        UPLOAD_FOLDER,
-        filename1
-    )
-
-    path2 = os.path.join(
-        UPLOAD_FOLDER,
-        filename2
-    )
+    path1 = os.path.join(UPLOAD_FOLDER, filename1)
+    path2 = os.path.join(UPLOAD_FOLDER, filename2)
 
     image1.save(path1)
     image2.save(path2)
 
-    base_image = cv2.imread(path2)
-    # Standardize dimensions with image 1
+    # ----------------------------
+    # Load Images
+    # ----------------------------
+
     reference = cv2.imread(path1)
+    base_image = cv2.imread(path2)
 
-    h = min(base_image.shape[0], reference.shape[0])
-    w = min(base_image.shape[1], reference.shape[1])
+    h = min(reference.shape[0], base_image.shape[0])
+    w = min(reference.shape[1], base_image.shape[1])
 
-    base_image = cv2.resize(
-        base_image,
-        (w, h)
-    )
-
-    combined_overlay = base_image.copy()
+    reference = cv2.resize(reference, (w, h))
+    base_image = cv2.resize(base_image, (w, h))
 
     metadata = {}
     summary = []
@@ -74,20 +66,21 @@ def analyze():
     # VEGETATION
     # =====================================
 
-    veg1 = vegetation_mask(path1)
-    veg2 = vegetation_mask(path2)
+    veg1 = vegetation_mask(reference)
+    veg2 = vegetation_mask(base_image)
 
     gained, lost = detect_changes(
         veg1,
         veg2
     )
 
-    combined_overlay = add_layer_overlay(
-        combined_overlay,
+    vegetation_overlay = add_layer_overlay(
+        base_image.copy(),
         gained,
         lost,
-        gain_color=[0, 255, 0],
-        loss_color=[0, 0, 255]
+        gain_color=(0, 255, 0),
+        loss_color=(0, 0, 255),
+        alpha=0.35
     )
 
     before_pct = round(
@@ -101,37 +94,42 @@ def analyze():
     )
 
     metadata["vegetation"] = {
+
         "before": before_pct,
+
         "after": after_pct,
+
         "change": round(
             after_pct - before_pct,
             2
         )
+
     }
 
     summary.append(
-        f"Vegetation changed by "
-        f"{after_pct - before_pct:.2f}%."
-    )
 
+        f"Vegetation changed by {after_pct-before_pct:.2f}%."
+
+    )
     # =====================================
     # WATER
     # =====================================
 
-    water1 = water_mask(path1)
-    water2 = water_mask(path2)
+    water1 = water_mask(reference)
+    water2 = water_mask(base_image)
 
     gained, lost = detect_changes(
         water1,
         water2
     )
 
-    combined_overlay = add_layer_overlay(
-        combined_overlay,
+    water_overlay = add_layer_overlay(
+        base_image.copy(),
         gained,
         lost,
-        gain_color=[255, 255, 0],   # cyan
-        loss_color=[255, 0, 255]    # purple
+        gain_color=(255, 255, 0),   # Cyan
+        loss_color=(255, 0, 255),   # Purple
+        alpha=0.35
     )
 
     before_pct = round(
@@ -145,39 +143,82 @@ def analyze():
     )
 
     metadata["water"] = {
+
         "before": before_pct,
+
         "after": after_pct,
+
         "change": round(
             after_pct - before_pct,
             2
         )
+
     }
 
     summary.append(
-        f"Water coverage changed by "
-        f"{after_pct - before_pct:.2f}%."
+
+        f"Water coverage changed by {after_pct-before_pct:.2f}%."
+
+    )
+
+    # =====================================
+    # COMBINED OVERLAY
+    # =====================================
+
+    combined_overlay = combine_overlays(
+        base_image.copy(),
+        [
+            vegetation_overlay,
+            water_overlay
+        ]
     )
 
     # =====================================
     # SAVE OUTPUTS
     # =====================================
 
-    output_path = os.path.join(
+    vegetation_path = os.path.join(
+        OUTPUT_FOLDER,
+        "vegetation_overlay.png"
+    )
+
+    water_path = os.path.join(
+        OUTPUT_FOLDER,
+        "water_overlay.png"
+    )
+
+    combined_path = os.path.join(
         OUTPUT_FOLDER,
         "combined_overlay.png"
     )
 
     cv2.imwrite(
-        output_path,
+        vegetation_path,
+        vegetation_overlay
+    )
+    print("Vegetation saved:", os.path.exists(vegetation_path))
+
+    cv2.imwrite(
+        water_path,
+        water_overlay
+    )
+    print("Water saved:", os.path.exists(water_path))
+
+    cv2.imwrite(
+        combined_path,
         combined_overlay
     )
+    print("Combined saved:", os.path.exists(combined_path))
 
     with open(
+
         os.path.join(
             OUTPUT_FOLDER,
             "analysis.json"
         ),
+
         "w"
+
     ) as f:
 
         json.dump(
@@ -187,13 +228,25 @@ def analyze():
         )
 
     return render_template(
-        "index.html",
-        image1=path1,
-        image2=path2,
-        overlay=output_path,
-        metadata=metadata,
-        summary=summary
+    "index.html",
+
+    vegetation_overlay=vegetation_path.replace("\\", "/"),
+
+    water_overlay=water_path.replace("\\", "/"),
+
+    combined_overlay=combined_path.replace("\\", "/"),
+
+    overlay=combined_path.replace("\\", "/"),
+
+    image1=path1.replace("\\", "/"),
+
+    image2=path2.replace("\\", "/"),
+
+    metadata=metadata,
+
+    summary=summary
     )
+
 
 if __name__ == "__main__":
 

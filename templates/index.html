@@ -17,6 +17,20 @@
 
 </head>
 
+<script>
+
+const overlays = {
+
+    vegetation: "/{{ vegetation_overlay }}",
+
+    water: "/{{ water_overlay }}",
+
+    combined: "/{{ combined_overlay }}"
+
+};
+
+</script>
+
 <body>
 
 <div class="container">
@@ -140,7 +154,7 @@
 
                     <input
                             type="checkbox"
-                            id="toggle-change"
+                            id="toggle-vegetation"
                             checked>
 
                     🌿 Vegetation
@@ -150,7 +164,9 @@
                 <label>
 
                     <input
-                            type="checkbox">
+                        type="checkbox"
+                        id="toggle-water"
+                        checked>
 
                     💧 Water Bodies
 
@@ -328,6 +344,7 @@
                 </h2>
 
                 <img
+                    id="overlay-image"
                     src="/{{ overlay }}"
                     alt="Change Detection">
 

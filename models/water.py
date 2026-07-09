@@ -2,9 +2,10 @@ import cv2
 import numpy as np
 
 
-def water_mask(image_path):
+def water_mask(image):
 
-    image = cv2.imread(image_path)
+    if isinstance(image, str):
+        image = cv2.imread(image)
 
     hsv = cv2.cvtColor(
         image,

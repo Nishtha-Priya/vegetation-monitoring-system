@@ -1,55 +1,59 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // ==============================
-    // Existing Toggle Functionality
-    // ==============================
+    const vegetation = document.getElementById("toggle-vegetation");
+    const water = document.getElementById("toggle-water");
+    const overlayImage = document.getElementById("overlay-image");
 
-    function connect(checkId, sectionId) {
-
-        const check = document.getElementById(checkId);
-        const section = document.getElementById(sectionId);
-
-        if (!check || !section) return;
-
-        check.addEventListener("change", function () {
-
-            section.style.display = check.checked ? "block" : "none";
-
-        });
+    // Exit safely if elements don't exist
+    if (!vegetation || !water || !overlayImage) {
+        console.log("Layer controls not found.");
+        return;
     }
 
-    connect("toggle-before", "before-section");
-    connect("toggle-after", "after-section");
-    connect("toggle-change", "overlay-section");
+    function updateOverlay() {
 
+        let newImage = "";
 
+        // Both selected
+        if (vegetation.checked && water.checked) {
 
-    // ======================================
-    // Future Layer Toggles
-    // ======================================
+            newImage = overlays.combined;
 
-    console.log("Dashboard Loaded");
+        }
 
+        // Vegetation only
+        else if (vegetation.checked) {
 
+            newImage = overlays.vegetation;
 
-    // ======================================
-    // Analyze Button Loading Animation
-    // ======================================
+        }
 
-    const form = document.querySelector(".toolbar");
+        // Water only
+        else if (water.checked) {
 
-    if (form) {
+            newImage = overlays.water;
 
-        form.addEventListener("submit", function () {
+        }
 
-            const btn = document.querySelector("button");
+        // Nothing selected
+        else {
 
-            btn.innerHTML = "Analyzing...";
+            overlayImage.style.display = "none";
+            return;
 
-            btn.disabled = true;
+        }
 
-        });
+        overlayImage.style.display = "block";
+
+        // Prevent browser caching
+        overlayImage.src = newImage + "?t=" + Date.now();
 
     }
+
+    vegetation.addEventListener("change", updateOverlay);
+    water.addEventListener("change", updateOverlay);
+
+    // Set correct overlay when page loads
+    updateOverlay();
 
 });
