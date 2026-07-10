@@ -312,7 +312,64 @@ def analyze():
             f,
             indent=4
         )
+    # =====================================
+    # TERRAIN ESTIMATION
+    # =====================================
 
+    veg = metadata["vegetation"]["after"]
+    water = metadata["water"]["after"]
+
+    terrain = {}
+
+    # Dominant terrain
+    if water > 30:
+        terrain["dominant"] = "Water Body"
+
+    elif veg > 70:
+        terrain["dominant"] = "Dense Vegetation"
+
+    elif veg > 40:
+        terrain["dominant"] = "Agricultural / Mixed Vegetation"
+
+    elif veg > 15:
+        terrain["dominant"] = "Sparse Vegetation"
+
+    else:
+        terrain["dominant"] = "Bare Terrain"
+
+    # Vegetation Density
+    if veg > 70:
+        terrain["vegetation_density"] = "High"
+    elif veg > 40:
+        terrain["vegetation_density"] = "Moderate"
+    elif veg > 15:
+        terrain["vegetation_density"] = "Low"
+    else:
+        terrain["vegetation_density"] = "Very Low"
+
+    # Water Presence
+    if water > 20:
+        terrain["water_presence"] = "High"
+    elif water > 8:
+        terrain["water_presence"] = "Moderate"
+    else:
+        terrain["water_presence"] = "Low"
+
+    # Landscape Type
+    if water > 20 and veg > 40:
+        terrain["landscape"] = "Wetland"
+
+    elif water < 5 and veg < 20:
+        terrain["landscape"] = "Dry / Bare Landscape"
+
+    elif veg > 60:
+        terrain["landscape"] = "Natural Vegetation"
+
+    else:
+        terrain["landscape"] = "Mixed Natural Terrain"
+
+    metadata["terrain"] = terrain
+    
     return render_template(
         "index.html",
 

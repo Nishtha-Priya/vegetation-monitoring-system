@@ -604,6 +604,36 @@ const overlays = {
 
                 {% endif %}
 
+                {% if metadata.terrain %}
+
+                <div class="analysis-block">
+
+                    <h3>🛰 Terrain Analysis</h3>
+
+                    <div class="metric">
+                        <span>Dominant Terrain</span>
+                        <span>{{ metadata.terrain.dominant }}</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Vegetation Density</span>
+                        <span>{{ metadata.terrain.vegetation_density }}</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Water Presence</span>
+                        <span>{{ metadata.terrain.water_presence }}</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Landscape Type</span>
+                        <span>{{ metadata.terrain.landscape }}</span>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
 
 
                 <div class="analysis-block">
