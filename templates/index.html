@@ -25,7 +25,9 @@ const overlays = {
 
     water: "/{{ water_overlay }}",
 
-    combined: "/{{ combined_overlay }}"
+    combined: "/{{ combined_overlay }}",
+
+    heatmap: "/{{ heatmap_overlay }}"
 
 };
 
@@ -150,28 +152,40 @@ const overlays = {
 
                 </label>
 
-                <label>
-
-                    <input
-                            type="checkbox"
-                            id="toggle-vegetation"
-                            checked>
-
-                    🌿 Vegetation
-
-                </label>
+                <h3>Analysis Viewer</h3>
 
                 <label>
-
-                    <input
-                        type="checkbox"
-                        id="toggle-water"
+                    <input type="radio"
+                        name="viewer"
+                        id="view-combined"
                         checked>
 
-                    💧 Water Bodies
-
+                    🌍 Combined
                 </label>
 
+                <label>
+                    <input type="radio"
+                        name="viewer"
+                        id="view-vegetation">
+
+                    🌿 Vegetation
+                </label>
+
+                <label>
+                    <input type="radio"
+                        name="viewer"
+                        id="view-water">
+
+                    💧 Water
+                </label>
+
+                <label>
+                    <input type="radio"
+                        name="viewer"
+                        id="view-heatmap">
+
+                    🔥 Heatmap
+                </label>
                 <hr>
 
                 <label class="coming-soon">
@@ -221,40 +235,6 @@ const overlays = {
                     </span>
 
                 </label>
-
-            </div>
-
-            <div class="panel-card">
-
-                <h2>
-
-                    Legend
-
-                </h2>
-
-                <div class="legend-item">
-
-                    🟢 Vegetation Gain
-
-                </div>
-
-                <div class="legend-item">
-
-                    🔴 Vegetation Loss
-
-                </div>
-
-                <div class="legend-item">
-
-                    🔵 Water Gain
-
-                </div>
-
-                <div class="legend-item">
-
-                    🟣 Water Loss
-
-                </div>
 
             </div>
 
@@ -333,25 +313,64 @@ const overlays = {
 
             {% if overlay %}
 
-            <section
-                class="change-card"
-                id="overlay-section">
+            <section class="change-card" id="overlay-section">
 
-                <h2>
-
-                    Detected Changes
-
-                </h2>
+                <h2>Detected Changes</h2>
 
                 <img
                     id="overlay-image"
                     src="/{{ overlay }}"
                     alt="Change Detection">
 
+
+                <div id="combined-legend" class="viewer-legend">
+
+                    <h5>Combined Legend</h5>
+
+                    <div class="legend-item">🟢 Vegetation Gain</div>
+                    <div class="legend-item">🔴 Vegetation Loss</div>
+                    <div class="legend-item">🔵 Water Gain</div>
+                    <div class="legend-item">🟣 Water Loss</div>
+
+                </div>
+
+                <div id="vegetation-legend" class="viewer-legend" style="display:none;">
+
+                    <h5>Vegetation Legend</h5>
+
+                    <div class="legend-item">🟢 Vegetation Gain</div>
+                    <div class="legend-item">🔴 Vegetation Loss</div>
+
+                </div>
+
+                <div id="water-legend" class="viewer-legend" style="display:none;">
+
+                    <h5>Water Legend</h5>
+
+                    <div class="legend-item">🔵 Water Gain</div>
+                    <div class="legend-item">🟣 Water Loss</div>
+
+                </div>
+
+                <div id="heatmap-legend" class="viewer-legend" style="display:none;">
+
+                    
+
+                    <div class="heatmap-legend">
+                        <h5>Heatmap Legend</h5>
+
+                        <span>Low</span>
+
+                        <div class="heat-gradient"></div>
+
+                        <span>High</span>
+
+                    </div>
+
+                </div>
+
             </section>
-
             {% endif %}
-
 
 
             <!-- ============================= -->

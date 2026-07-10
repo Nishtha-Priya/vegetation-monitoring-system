@@ -1,59 +1,88 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const vegetation = document.getElementById("toggle-vegetation");
-    const water = document.getElementById("toggle-water");
     const overlayImage = document.getElementById("overlay-image");
 
-    // Exit safely if elements don't exist
-    if (!vegetation || !water || !overlayImage) {
-        console.log("Layer controls not found.");
-        return;
-    }
+    if (!overlayImage) return;
 
-    function updateOverlay() {
+    const combined = document.getElementById("view-combined");
+    const vegetation = document.getElementById("view-vegetation");
+    const water = document.getElementById("view-water");
+    const heatmap = document.getElementById("view-heatmap");
 
-        let newImage = "";
+    const legends = {
 
-        // Both selected
-        if (vegetation.checked && water.checked) {
+        combined: document.getElementById("combined-legend"),
 
-            newImage = overlays.combined;
+        vegetation: document.getElementById("vegetation-legend"),
+
+        water: document.getElementById("water-legend"),
+
+        heatmap: document.getElementById("heatmap-legend")
+
+    };
+
+    function changeImage(layer){
+
+        overlayImage.src = overlays[layer] + "?t=" + Date.now();
+
+        Object.values(legends).forEach(legend => {
+
+            if(legend){
+
+                legend.style.display = "none";
+
+            }
+
+        });
+
+        if(legends[layer]){
+
+            legends[layer].style.display = "block";
 
         }
-
-        // Vegetation only
-        else if (vegetation.checked) {
-
-            newImage = overlays.vegetation;
-
-        }
-
-        // Water only
-        else if (water.checked) {
-
-            newImage = overlays.water;
-
-        }
-
-        // Nothing selected
-        else {
-
-            overlayImage.style.display = "none";
-            return;
-
-        }
-
-        overlayImage.style.display = "block";
-
-        // Prevent browser caching
-        overlayImage.src = newImage + "?t=" + Date.now();
 
     }
 
-    vegetation.addEventListener("change", updateOverlay);
-    water.addEventListener("change", updateOverlay);
+    combined.addEventListener("change", () => {
 
-    // Set correct overlay when page loads
-    updateOverlay();
+        if(combined.checked){
+
+            changeImage("combined");
+
+        }
+
+    });
+
+    vegetation.addEventListener("change", () => {
+
+        if(vegetation.checked){
+
+            changeImage("vegetation");
+
+        }
+
+    });
+
+    water.addEventListener("change", () => {
+
+        if(water.checked){
+
+            changeImage("water");
+
+        }
+
+    });
+
+    heatmap.addEventListener("change", () => {
+
+        if(heatmap.checked){
+
+            changeImage("heatmap");
+
+        }
+
+    });
+
+    changeImage("combined");
 
 });

@@ -621,3 +621,78 @@ input[type="checkbox"]{
     }
 
 }
+.change-card img{
+
+    width:100%;
+
+    border-radius:10px;
+
+    max-height:500px;
+
+    object-fit:contain;
+
+}
+.heatmap-legend{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-top:15px;
+
+    font-weight:600;
+
+}
+
+.heat-gradient{
+
+    flex:1;
+
+    height:18px;
+
+    border-radius:20px;
+
+    background:linear-gradient(
+        to right,
+        #0033ff,
+        #00ffff,
+        #00ff00,
+        #ffff00,
+        #ff8800,
+        #ff0000
+    );
+
+    border:1px solid #ccc;
+
+}
+.dynamic-legend{
+
+    margin-top:20px;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    background:#f8f9fa;
+
+    border:1px solid #ddd;
+
+}
+
+.dynamic-legend h5{
+
+    color:#d97706;
+
+    margin-bottom:12px;
+
+    font-size:16px;
+
+}
+
+.dynamic-legend .legend-item{
+
+    margin:8px 0;
+
+}

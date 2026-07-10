@@ -11,7 +11,9 @@ from models.water import water_mask
 from models.change_detector import (
     detect_changes,
     add_layer_overlay,
-    combine_overlays
+    combine_overlays,
+    create_heatmap,
+    overlay_heatmap
 )
 
 app = Flask(__name__)
@@ -80,7 +82,7 @@ def analyze():
         lost,
         gain_color=(0, 255, 0),
         loss_color=(0, 0, 255),
-        alpha=0.35
+        alpha=0.40
     )
 
     before_pct = round(
@@ -105,12 +107,6 @@ def analyze():
         )
 
     }
-
-    summary.append(
-
-        f"Vegetation changed by {after_pct-before_pct:.2f}%."
-
-    )
     # =====================================
     # WATER
     # =====================================
@@ -154,11 +150,75 @@ def analyze():
         )
 
     }
+    # =====================================
+    # AI ANALYSIS
+    # =====================================
+
+    summary = []
+
+    veg_change = metadata["vegetation"]["change"]
+    water_change = metadata["water"]["change"]
+
+    # Vegetation
+    if veg_change > 5:
+        summary.append(
+            f"🌿 Vegetation increased by {veg_change:.2f}%."
+        )
+    elif veg_change < -5:
+        summary.append(
+            f"🌿 Vegetation decreased by {abs(veg_change):.2f}%."
+        )
+    else:
+        summary.append(
+            "🌿 Vegetation remained relatively stable."
+        )
+
+    # Water
+    if water_change > 3:
+        summary.append(
+            f"💧 Water bodies expanded by {water_change:.2f}%."
+        )
+    elif water_change < -3:
+        summary.append(
+            f"💧 Water bodies reduced by {abs(water_change):.2f}%."
+        )
+    else:
+        summary.append(
+            "💧 No significant water change detected."
+        )
+
+    # Terrain
+    veg_after = metadata["vegetation"]["after"]
+    water_after = metadata["water"]["after"]
+
+    if veg_after > 60:
+        terrain = "Dense Vegetation"
+
+    elif veg_after > 35:
+        terrain = "Agricultural / Mixed Vegetation"
+
+    elif water_after > 20:
+        terrain = "Water Dominated"
+
+    else:
+        terrain = "Sparse Vegetation / Bare Terrain"
+
+    summary.append(f"🛰 Dominant Terrain: {terrain}")
+
+    # Overall Change
+    overall = abs(veg_change) + abs(water_change)
+
+    if overall < 5:
+        severity = "Low"
+
+    elif overall < 15:
+        severity = "Moderate"
+
+    else:
+        severity = "High"
 
     summary.append(
-
-        f"Water coverage changed by {after_pct-before_pct:.2f}%."
-
+        f"📊 Overall Change Intensity: {severity}"
     )
 
     # =====================================
@@ -171,6 +231,20 @@ def analyze():
             vegetation_overlay,
             water_overlay
         ]
+    )
+
+    # =====================================
+    # CHANGE HEATMAP
+    # =====================================
+
+    combined_before = cv2.bitwise_or(veg1, water1)
+    combined_after = cv2.bitwise_or(veg2, water2)
+
+    heatmap = create_heatmap(combined_before, combined_after)
+
+    heatmap_overlay = overlay_heatmap(
+        base_image.copy(),
+        heatmap
     )
 
     # =====================================
@@ -192,6 +266,11 @@ def analyze():
         "combined_overlay.png"
     )
 
+    heatmap_path = os.path.join(
+        OUTPUT_FOLDER,
+        "change_heatmap.png"
+    )
+
     cv2.imwrite(
         vegetation_path,
         vegetation_overlay
@@ -209,6 +288,13 @@ def analyze():
         combined_overlay
     )
     print("Combined saved:", os.path.exists(combined_path))
+
+    cv2.imwrite(
+        heatmap_path,
+        heatmap_overlay
+    )
+
+    print("Heatmap saved:", os.path.exists(heatmap_path))
 
     with open(
 
@@ -228,23 +314,25 @@ def analyze():
         )
 
     return render_template(
-    "index.html",
+        "index.html",
 
-    vegetation_overlay=vegetation_path.replace("\\", "/"),
+        vegetation_overlay=vegetation_path.replace("\\", "/"),
 
-    water_overlay=water_path.replace("\\", "/"),
+        water_overlay=water_path.replace("\\", "/"),
 
-    combined_overlay=combined_path.replace("\\", "/"),
+        combined_overlay=combined_path.replace("\\", "/"),
 
-    overlay=combined_path.replace("\\", "/"),
+        heatmap_overlay=heatmap_path.replace("\\", "/"),
 
-    image1=path1.replace("\\", "/"),
+        overlay=combined_path.replace("\\", "/"),
 
-    image2=path2.replace("\\", "/"),
+        image1=path1.replace("\\", "/"),
 
-    metadata=metadata,
+        image2=path2.replace("\\", "/"),
 
-    summary=summary
+        metadata=metadata,
+
+        summary=summary
     )
 
 
