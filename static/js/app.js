@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const combined = document.getElementById("view-combined");
     const vegetation = document.getElementById("view-vegetation");
     const water = document.getElementById("view-water");
+    const wetlands = document.getElementById("view-wetlands");
     const heatmap = document.getElementById("view-heatmap");
 
     const legends = {
@@ -16,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
         vegetation: document.getElementById("vegetation-legend"),
 
         water: document.getElementById("water-legend"),
+
+        wetlands:document.getElementById("wetlands-legend"),
 
         heatmap: document.getElementById("heatmap-legend")
 
@@ -68,6 +71,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if(water.checked){
 
             changeImage("water");
+
+        }
+
+    });
+
+    wetlands.addEventListener("change",()=>{
+
+        if(wetlands.checked){
+
+            changeImage("wetlands");
 
         }
 

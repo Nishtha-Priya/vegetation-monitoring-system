@@ -25,6 +25,12 @@ const overlays = {
 
     water: "/{{ water_overlay }}",
 
+    wetlands: "/{{ wetland_overlay }}",
+
+    marshy: "/{{ marshy_overlay }}",
+
+    boggy: "/{{ boggy_overlay }}",
+
     combined: "/{{ combined_overlay }}",
 
     heatmap: "/{{ heatmap_overlay }}"
@@ -177,6 +183,14 @@ const overlays = {
                         id="view-water">
 
                     💧 Water
+                </label>
+
+                <label>
+                    <input type="radio"
+                        name="viewer"
+                        id="view-wetlands">
+
+                    🌾 Wetlands
                 </label>
 
                 <label>
@@ -352,6 +366,15 @@ const overlays = {
 
                 </div>
 
+                <div id="wetlands-legend">
+
+                <h5>Wetland Legend</h5>
+
+                <div class="legend-item">🔵 Wetland Gain</div>
+                <div class="legend-item">🟠 Wetland Loss</div>
+
+                </div>
+
                 <div id="heatmap-legend" class="viewer-legend" style="display:none;">
 
                     
@@ -407,7 +430,7 @@ const overlays = {
 
                     <div class="future-item">
 
-                        🤖 SegFormer AI
+                        🌾 Wetland Analysis
 
                     </div>
 
@@ -570,6 +593,80 @@ const overlays = {
 
                 {% endif %}
 
+                {% if metadata.wetlands %}
+
+                <div class="analysis-block">
+
+                    <h3>🌾 Wetlands</h3>
+
+                    <div class="metric">
+                        <span>Before</span>
+                        <span>{{ metadata.wetlands.before }}%</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>After</span>
+                        <span>{{ metadata.wetlands.after }}%</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Change</span>
+                        <span>{{ metadata.wetlands.change }}%</span>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                {% if metadata.marshy %}
+
+                <div class="analysis-block">
+
+                    <h3>🌱 Marshy Areas</h3>
+
+                    <div class="metric">
+                        <span>Before</span>
+                        <span>{{ metadata.marshy.before }}%</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>After</span>
+                        <span>{{ metadata.marshy.after }}%</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Change</span>
+                        <span>{{ metadata.marshy.change }}%</span>
+                    </div>
+
+                </div>
+
+                {% endif %}
+                {% if metadata.boggy %}
+
+                <div class="analysis-block">
+
+                    <h3>🟤 Boggy Areas</h3>
+
+                    <div class="metric">
+                        <span>Before</span>
+                        <span>{{ metadata.boggy.before }}%</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>After</span>
+                        <span>{{ metadata.boggy.after }}%</span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Change</span>
+                        <span>{{ metadata.boggy.change }}%</span>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
 
 
                 {% if summary %}
@@ -634,6 +731,30 @@ const overlays = {
 
                 {% endif %}
 
+                {% if metadata.road_analysis %}
+
+                <div class="analysis-block">
+
+                    <h3>🛣 Road Accessibility Analysis</h3>
+
+                    <div class="metric">
+                        <span>Roads Nearby</span>
+                        <span>
+                            {{ metadata.road_analysis.roads_nearby }}
+                        </span>
+                    </div>
+
+                    <div class="metric">
+                        <span>Accessibility</span>
+                        <span>
+                            {{ metadata.road_analysis.accessibility }}
+                        </span>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
 
 
                 <div class="analysis-block">
@@ -684,9 +805,9 @@ const overlays = {
 
                         <span>Terrain</span>
 
-                        <span class="status-pending">
+                        <span class="status-active">
 
-                            Coming Soon
+                            Active
 
                         </span>
 
