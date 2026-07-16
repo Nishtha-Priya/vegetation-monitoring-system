@@ -1,12 +1,15 @@
 import cv2
 import numpy as np
+from models.water import water_mask
 
 
-def vegetation_mask(image):
+def vegetation_mask(image, exclude_water=True):
 
     # Load image if a path is provided
     if isinstance(image, str):
         image = cv2.imread(image)
+
+    original = image.copy()
 
     # -----------------------------
     # CLAHE Contrast Enhancement
@@ -40,14 +43,33 @@ def vegetation_mask(image):
     # -----------------------------
     # Green Detection
     # -----------------------------
-    lower_green = np.array([30, 40, 40])
-    upper_green = np.array([95, 255, 255])
+    # Measured on two real captures of the same scene, taken years apart:
+    # actual vegetation hue read as ~30-50 in one image and ~79-81 in the
+    # other, due to differences in acquisition/color grading between
+    # dates. A single narrow hue range can't cover both without also
+    # catching something else, so this range is widened to ~25-85 to
+    # span both clusters. That reopens overlap with teal/navy water
+    # (H~90-97), so water is NOT excluded by hue here at all - it's
+    # excluded explicitly below using the dedicated water detector,
+    # which relies on its own tuned range + morphology and is not
+    # fooled by vegetation's hue drift across dates.
+    lower_green = np.array([25, 15, 10])
+    upper_green = np.array([85, 200, 255])
 
     mask = cv2.inRange(
         hsv,
         lower_green,
         upper_green
     )
+
+    # -----------------------------
+    # Explicitly Exclude Water
+    # -----------------------------
+    # Don't trust hue to keep water out - ask the water detector
+    # directly and zero out anything it's confident is water.
+    if exclude_water:
+        wmask = water_mask(original)
+        mask[wmask == 255] = 0
 
     # -----------------------------
     # Morphology
